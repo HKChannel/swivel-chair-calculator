@@ -12,8 +12,10 @@ Self-contained, zero-dependency single-page app (`index.html`) designed as the o
 2. **GitHub Pages:** Commit `companion-app/index.html` to a repository (or `/docs`) and enable GitHub Pages.
 3. **Vercel:** Run `npx vercel --prod` inside `companion-app/`.
 
-## Where to Paste Your Live URL Before Publishing
-Replace `[AUTHOR INPUT NEEDED: insert deployed Companion App URL]` with your deployed HTTPS link inside:
+## Live Deployment
+Live GitHub Pages URL: **https://hkchannel.github.io/swivel-chair-calculator/**
+
+The live URL is configured as the companion bridge in:
 1. `01-article-final.md` (Section: *Estimate Your Team's Reclaimable Hours*)
 2. `04-interactivity-kit.md` (Section: *Interactive Companion Bridge*)
-3. `05-launch-distribution.md` (Step 1 & Step 2 **First Comments** — never in the main feed post body)
+3. `05-launch-distribution.md` (Step 1 & Step 2 First Comments)
