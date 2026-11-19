@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swivel-Chair Capacity &amp; Audit-Readiness Calculator | Finance AI Toolkit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0B132B;
+      --navy-2: #131F3D;
+      --light: #F8FAFC;
+      --card: #FFFFFF;
+      --border: #E2E8F0;
+      --border-strong: #CBD5E1;
+      --ink: #0F172A;
+      --ink-muted: #475569;
+      --teal: #0F766E;
+      --teal-bright: #14B8A6;
+      --teal-soft: #F0FDFA;
+      --teal-border: #99F6E4;
+      --blue: #2563EB;
+      --blue-soft: #EFF6FF;
+      --amber: #D97706;
+      --amber-soft: #FFFBEB;
+      --red: #B91C1C;
+      --red-soft: #FEF2F2;
+      --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Cascadia Mono', 'Consolas', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--light);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .topbar {
+      background:
+        radial-gradient(circle at 86% 18%, rgba(20, 184, 166, 0.2), transparent 44%),
+        var(--navy);
+      color: #F8FAFC;
+      padding: 28px 24px 30px;
+      border-bottom: 3px solid var(--teal-bright);
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .top-flex {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal-bright);
+      background: rgba(20, 184, 166, 0.14);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: #CBD5E1;
+      font-size: 15px;
+      max-width: 680px;
+    }
+
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--teal-bright);
+      color: #06211E;
+    }
+    .btn-primary:hover { background: #2DD4BF; }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F8FAFC;
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    main.container {
+      padding: 24px 24px 56px;
+    }
+
+    /* Tab Navigation */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 22px;
+      background: #E2E8F0;
+      padding: 6px;
+      border-radius: 14px;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .tab-btn.active {
+      background: var(--card);
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+
+    .tab-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--teal-soft);
+      color: var(--teal);
+    }
+
+    .panel-section {
+      display: none;
+    }
+    .panel-section.active {
+      display: block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.04fr 0.96fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .card-kicker {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-top: 2px;
+      margin-bottom: 16px;
+    }
+
+    /* Sliders */
+    .control-row {
+      margin-bottom: 18px;
+    }
+
+    .control-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .val-badge {
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--blue);
+      background: var(--blue-soft);
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      accent-color: var(--teal);
+      cursor: pointer;
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preset-btn {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border-strong);
+      background: #F8FAFC;
+      color: var(--ink-muted);
+      cursor: pointer;
+    }
+
+    .preset-btn.active {
+      background: var(--teal-soft);
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .disclaimer {
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 13px;
+    }
+
+    /* KPI Output Cards */
+    .kpi-trio {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kpi-box {
+      background: var(--navy);
+      color: #F8FAFC;
+      border-radius: 14px;
+      padding: 16px 15px;
+      border: 1px solid var(--navy-2);
+    }
+
+    .kpi-box.accent {
+      border-color: var(--teal-bright);
+    }
+
+    .kpi-lbl {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #94A3B8;
+    }
+
+    .kpi-num {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--teal-bright);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      margin-top: 6px;
+      line-height: 1.15;
+    }
+
+    .kpi-box.blue .kpi-num {
+      color: #60A5FA;
+    }
+
+    .kpi-sub {
+      font-size: 11.5px;
+      color: #CBD5E1;
+      margin-top: 4px;
+    }
+
+    .chart-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .chart-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    /* Bottleneck Selector */
+    .bottleneck-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .b-btn {
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 10px 10px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-strong);
+      background: #FFFFFF;
+      color: var(--ink-muted);
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .b-btn.active {
+      background: var(--teal-soft);
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .b-card {
+      background: var(--teal-soft);
+      border: 1.5px solid var(--teal-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .b-card-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .b-card-body {
+      font-size: 13.5px;
+      color: var(--ink);
+      line-height: 1.48;
+    }
+
+    /* Scorecard Tab 2 */
+    .pillar-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .pillar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .pillar-name {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .pillar-score {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .crit-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .crit-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink);
+      flex: 1 1 260px;
+    }
+
+    .seg-group {
+      display: inline-flex;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .seg-opt {
+      border: none;
+      background: #F8FAFC;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-right: 1px solid var(--border-strong);
+    }
+
+    .seg-opt:last-child { border-right: none; }
+
+    .seg-opt.s0.active { background: var(--red-soft); color: var(--red); }
+    .seg-opt.s1.active { background: var(--amber-soft); color: var(--amber); }
+    .seg-opt.s2.active { background: var(--teal); color: #FFFFFF; }
+
+    /* Readiness Summary */
+    .gauge-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+
+    .gauge-box {
+      position: relative;
+      width: 128px;
+      height: 128px;
+      flex-shrink: 0;
+    }
+
+    .gauge-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-pct {
+      font-family: var(--font-mono);
+      font-size: 30px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .gauge-pts {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--ink-muted);
+    }
+
+    .tier-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .pillar-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .p-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .p-bar-lbl {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .p-bar-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #E2E8F0;
+      overflow: hidden;
+    }
+
+    .p-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--teal);
+      transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .priority-box {
+      background: var(--navy);
+      color: #F8FAFC;
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+
+    .priority-head {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--teal-bright);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .priority-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+      color: #E2E8F0;
+    }
+
+    .priority-list li {
+      display: flex;
+      gap: 8px;
+    }
+
+    .priority-list li span.num {
+      font-family: var(--font-mono);
+      color: var(--teal-bright);
+      font-weight: 700;
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      background: var(--navy);
+      color: #F8FAFC;
+      border: 1.5px solid var(--teal-bright);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 99;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 880px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .kpi-trio { grid-template-columns: 1fr; }
+      .bottleneck-tabs { grid-template-columns: 1fr; }
+      .tabs { width: 100%; }
+      .tab-btn { flex: 1; justify-content: center; font-size: 13px; padding: 10px; }
+    }
+
+    @media print {
+      .tabs, .action-bar, .toast { display: none !important; }
+      .panel-section { display: block !important; margin-bottom: 28px; page-break-inside: avoid; }
+      body { background: #FFFFFF; }
+      .topbar { background: #0B132B !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container top-flex">
+      <div>
+        <div class="kicker">MICROSOFT GLOBAL TREASURY &amp; COPILOT FOR FINANCE COMPANION</div>
+        <h1>Swivel-Chair Capacity &amp; Audit-Readiness Calculator</h1>
+        <p class="subtitle">
+          Benchmark reclaimable finance hours against Microsoft’s 40% call-prep reduction and evaluate your 12-point ERP &amp; audit-trail controls.
+        </p>
+      </div>
+      <div class="action-bar">
+        <button id="btn-copy" class="btn btn-primary" type="button">Copy CFO Briefing Summary</button>
+        <button id="btn-print" class="btn btn-ghost" type="button">Print / Save PDF Brief</button>
+        <button id="btn-reset" class="btn btn-ghost" type="button">Reset Defaults</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="tabs" role="tablist">
+      <button id="tab-btn-1" class="tab-btn active" type="button" data-tab="tab-1">
+        1. Swivel-Chair Capacity Estimator <span id="tab-pill-hrs" class="tab-pill">1,843 hrs/yr</span>
+      </button>
+      <button id="tab-btn-2" class="tab-btn" type="button" data-tab="tab-2">
+        2. 12-Point Audit-Readiness Scorecard <span id="tab-pill-score" class="tab-pill">58%</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: CAPACITY ESTIMATOR -->
+    <section id="tab-1" class="panel-section active">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-kicker">Inputs • Team Swivel-Chair Baseline</div>
+          <h2 class="card-title">Model Your Finance Operations Footprint</h2>
+
+          <div class="control-row">
+            <div class="control-head">
+              <label for="in-team">Collectors / Accounting Staff</label>
+              <span id="out-team" class="val-badge">12 staff</span>
+            </div>
+            <input id="in-team" type="range" min="1" max="100" step="1" value="12" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-head">
+              <label for="in-hrs">Weekly Swivel-Chair Prep Hours / Person</label>
+              <span id="out-hrs" class="val-badge">8 hrs/wk</span>
+            </div>
+            <input id="in-hrs" type="range" min="1" max="25" step="1" value="8" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-head">
+              <label for="in-rate">Blended Fully Loaded Hourly Cost</label>
+              <span id="out-rate" class="val-badge">$75 / hr</span>
+            </div>
+            <input id="in-rate" type="range" min="35" max="200" step="5" value="75" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-head">
+              <label for="in-weeks">Working Weeks / Year</label>
+              <span id="out-weeks" class="val-badge">48 wks</span>
+            </div>
+            <input id="in-weeks" type="range" min="46" max="52" step="1" value="48" />
+          </div>
+
+          <div class="control-row">
+            <div class="control-head">
+              <label for="in-pct">Target Prep-Time Reduction</label>
+              <span id="out-pct" class="val-badge">40%</span>
+            </div>
+            <input id="in-pct" type="range" min="10" max="50" step="5" value="40" />
+            <div class="preset-row">
+              <button class="preset-btn" type="button" data-preset="20">Conservative 20%</button>
+              <button class="preset-btn" type="button" data-preset="30">Balanced 30%</button>
+              <button class="preset-btn active" type="button" data-preset="40">Microsoft Benchmark 40%</button>
+            </div>
+          </div>
+
+          <div class="disclaimer">
+            <strong>Benchmark Note:</strong> The 40% default reflects Microsoft Global Treasury’s reported reduction in collector call preparation time after consolidating SAP + Dynamics 365 and deploying targeted briefing agents. Treat it as an editable planning reference, not a guarantee.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-kicker">Outputs • Reclaimed Finance Capacity</div>
+          <h2 class="card-title">Annual Impact &amp; Bottleneck Blueprint</h2>
+
+          <div class="kpi-trio">
+            <div class="kpi-box accent">
+              <div class="kpi-lbl">Reclaimable Hours</div>
+              <div id="kpi-hours" class="kpi-num">1,843 hrs</div>
+              <div class="kpi-sub">per year unlocked</div>
+            </div>
+            <div class="kpi-box blue">
+              <div class="kpi-lbl">Capacity Value</div>
+              <div id="kpi-usd" class="kpi-num">$138,225</div>
+              <div class="kpi-sub">indicative labor shift</div>
+            </div>
+            <div class="kpi-box">
+              <div class="kpi-lbl">Equivalent FTE</div>
+              <div id="kpi-fte" class="kpi-num">0.96 FTE</div>
+              <div class="kpi-sub">shifted to judgment work</div>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-title">Annual Hours Comparison (Swivel-Chair Drag vs. Reclaimed)</div>
+            <svg id="capacity-svg" viewBox="0 0 480 142" width="100%" aria-label="Annual capacity bar chart">
+              <text x="0" y="18" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#0F172A">Current Swivel-Chair Baseline</text>
+              <text id="svg-lbl-base" x="480" y="18" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#475569">4,608 hrs</text>
+              <rect x="0" y="25" width="480" height="14" rx="7" fill="#E2E8F0" />
+              <rect id="svg-bar-base" x="0" y="25" width="480" height="14" rx="7" fill="#D97706" />
+
+              <text x="0" y="64" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#0F172A">Remaining Prep After Consolidation</text>
+              <text id="svg-lbl-rem" x="480" y="64" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#475569">2,765 hrs</text>
+              <rect x="0" y="71" width="480" height="14" rx="7" fill="#E2E8F0" />
+              <rect id="svg-bar-rem" x="0" y="71" width="288" height="14" rx="7" fill="#2563EB" />
+
+              <text x="0" y="110" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#0F766E">Reclaimed High-Value Finance Hours</text>
+              <text id="svg-lbl-rec" x="480" y="110" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#0F766E">1,843 hrs</text>
+              <rect x="0" y="117" width="480" height="14" rx="7" fill="#E2E8F0" />
+              <rect id="svg-bar-rec" x="0" y="117" width="192" height="14" rx="7" fill="#0F766E" />
+            </svg>
+          </div>
+
+          <div>
+            <div class="card-kicker" style="margin-bottom: 8px;">Select Primary Bottleneck Pattern</div>
+            <div class="bottleneck-tabs">
+              <button class="b-btn active" type="button" data-bn="1">(1) Cash Collections &amp; Follow-Up</button>
+              <button class="b-btn" type="button" data-bn="2">(2) Reconciliations &amp; Journal Prep</button>
+              <button class="b-btn" type="button" data-bn="3">(3) Variance &amp; Audit Tie-Outs</button>
+            </div>
+            <div class="b-card">
+              <div id="bn-title" class="b-card-title">Pattern: 5 Targeted Collections Agents + Unified Subledger</div>
+              <div id="bn-body" class="b-card-body">
+                Consolidate invoice &amp; CRM promise histories into a single ERP truth layer, then pair predictive triage and instant case briefings with automated remittance matching—tracked strictly on <strong>dollars collected relative to hours worked</strong>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: AUDIT-READINESS SCORECARD -->
+    <section id="tab-2" class="panel-section">
+      <div class="grid-2">
+        <div>
+          <div id="pillars-container"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-kicker">Assessment • Control &amp; Governance Posture</div>
+          <h2 class="card-title">Audit-Readiness Diagnostic</h2>
+
+          <div class="gauge-header">
+            <div class="gauge-box">
+              <svg width="128" height="128" viewBox="0 0 128 128">
+                <circle cx="64" cy="64" r="52" fill="none" stroke="#E2E8F0" stroke-width="12" />
+                <circle id="sc-arc" cx="64" cy="64" r="52" fill="none" stroke="#D97706" stroke-width="12" stroke-linecap="round"
+                  stroke-dasharray="326.73" stroke-dashoffset="137.2" transform="rotate(-90 64 64)" />
+              </svg>
+              <div class="gauge-center">
+                <div id="sc-pct" class="gauge-pct">58%</div>
+                <div id="sc-pts" class="gauge-pts">14 / 24 pts</div>
+              </div>
+            </div>
+
+            <div>
+              <div id="sc-tier" class="tier-pill" style="background:#FEF3C7; color:#92400E;">Foundation Building</div>
+              <p id="sc-summary" style="font-size: 13.5px; color: var(--ink-muted);">
+                Core infrastructure is taking shape, but verifiable receipts or ERP posting guardrails still leave audit exposure.
+              </p>
+            </div>
+          </div>
+
+          <div id="pillar-bars" class="pillar-bars"></div>
+
+          <div class="priority-box">
+            <div class="priority-head">Top 3 Next-30-Day Priorities</div>
+            <ul id="priority-list" class="priority-list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast">CFO Briefing Summary copied to clipboard</div>
+
+  <script>
+    const state = {
+      team: 12,
+      hrs: 8,
+      rate: 75,
+      weeks: 48,
+      pct: 40,
+      bottleneck: '1',
+      scores: [
+        // Pillar 0: Data Foundation (max 6)
+        2, 1, 1,
+        // Pillar 1: Targeted Agent Scope (max 6)
+        2, 1, 1,
+        // Pillar 2: Verifiable Receipts & Audit Trail (max 6)
+        1, 1, 1,
+        // Pillar 3: Human Approval Gate & Adoption (max 6)
+        2, 1, 0
+      ] // Initial sum = 14 / 24 = 58%
+    };
+
+    const bottlenecks = {
+      '1': {
+        title: 'Pattern: 5 Targeted Collections Agents + Unified Subledger',
+        body: 'Consolidate invoice and CRM promise histories into a single ERP truth layer, then pair predictive triage and instant case briefings with automated remittance matching—tracked strictly on <strong>dollars collected relative to hours worked</strong>.'
+      },
+      '2': {
+        title: 'Pattern: Excel Opt-In Audit Trail + Zero Auto-Posting',
+        body: 'Pull live ERP context directly into Excel via the <strong>Dynamics 365 ERP apps plugin</strong>, Work IQ, and Fabric IQ to draft reconciliations and journal entries—with an opt-in audit trail logging what changed and why, plus mandatory human sign-off before posting.'
+      },
+      '3': {
+        title: 'Pattern: Source-Cited Variance Analysis + Agent 365 Governance',
+        body: 'Ground variance commentary directly in Fabric IQ and subledger citations inside Copilot Cowork, while governing agent permissions, spend, and ROI centrally via <strong>Agent 365</strong> to prevent unlogged shadow AI.'
+      }
+    };
+
+    const pillars = [
+      {
+        name: '1. Data Foundation & Process Mapping',
+        items: [
+          { idx: 0, text: 'Consolidated ERP / subledger single source of truth (no siloed master sheets)', action: 'Consolidate fragmented subledgers and billing portals into one ERP truth layer.' },
+          { idx: 1, text: 'Bottlenecks & manual handoffs mapped before designing AI workflows', action: 'Document end-to-end process bottlenecks before introducing autonomous agents.' },
+          { idx: 2, text: 'Live read/draft ERP bridge configured (e.g., D365 plugin / Work IQ / Fabric IQ)', action: 'Connect live ERP context into Excel rather than relying on manual CSV exports.' }
+        ]
+      },
+      {
+        name: '2. Targeted Agent Scope & Observability',
+        items: [
+          { idx: 3, text: 'Narrow task-specific agents used instead of one generic "magic" chatbot', action: 'Split generic AI prompts into scoped workflows (triage, briefings, routing, cash app).' },
+          { idx: 4, text: 'Hard business KPI tracked (e.g., dollars collected per hour worked)', action: 'Replace vanity prompt-count metrics with cash-collected-per-hour observability.' },
+          { idx: 5, text: 'Central agent inventory, spend, and ROI governance (Agent 365 / equivalent)', action: 'Bring finance AI pilots under central IT/Finance governance to eliminate shadow AI.' }
+        ]
+      },
+      {
+        name: '3. Verifiable Receipts & Audit Trail',
+        items: [
+          { idx: 6, text: 'Opt-in audit trail active for Excel reconciliations, JEs, and variance drafts', action: 'Turn on persistent chat-history audit logging showing every AI cell/schedule change.' },
+          { idx: 7, text: 'Every drafted figure links to underlying system-of-record documents & rationale', action: 'Require verifiable source receipts and written rationale on every AI-generated schedule.' },
+          { idx: 8, text: 'External/internal auditors can review historical AI change logs on demand', action: 'Validate AI change-log retention format directly with internal/external audit teams.' }
+        ]
+      },
+      {
+        name: '4. Human Approval Gate & Habit Adoption',
+        items: [
+          { idx: 9, text: 'Zero auto-posting enforced—human reviewer approves every final ERP commit', action: 'Enforce strict read/draft boundaries so AI never auto-posts journal entries to the ERP.' },
+          { idx: 10, text: 'Clear escalation rules for disputed invoices, exceptions, and judgment calls', action: 'Define explicit exception thresholds routing edge cases straight to senior accountants.' },
+          { idx: 11, text: 'Change-management budget & team trust training exceeds software setup time', action: 'Allocate dedicated coaching and side-by-side verification time so staff trust the workflow.' }
+        ]
+      }
+    ];
+
+    const fmtNum = (n) => Math.round(n).toLocaleString('en-US');
+
+    function updateCapacity() {
+      const baseHours = state.team * state.hrs * state.weeks;
+      const reclaimed = Math.round(baseHours * (state.pct / 100));
+      const remaining = baseHours - reclaimed;
+      const usd = reclaimed * state.rate;
+      const fte = reclaimed / (40 * state.weeks);
+
+      document.getElementById('out-team').textContent = `${state.team} staff`;
+      document.getElementById('out-hrs').textContent = `${state.hrs} hrs/wk`;
+      document.getElementById('out-rate').textContent = `$${state.rate} / hr`;
+      document.getElementById('out-weeks').textContent = `${state.weeks} wks`;
+      document.getElementById('out-pct').textContent = `${state.pct}%`;
+
+      document.getElementById('kpi-hours').textContent = `${fmtNum(reclaimed)} hrs`;
+      document.getElementById('kpi-usd').textContent = `$${fmtNum(usd)}`;
+      document.getElementById('kpi-fte').textContent = `${fte.toFixed(2)} FTE`;
+      document.getElementById('tab-pill-hrs').textContent = `${fmtNum(reclaimed)} hrs/yr`;
+
+      document.getElementById('svg-lbl-base').textContent = `${fmtNum(baseHours)} hrs`;
+      document.getElementById('svg-lbl-rem').textContent = `${fmtNum(remaining)} hrs`;
+      document.getElementById('svg-lbl-rec').textContent = `${fmtNum(reclaimed)} hrs`;
+
+      const remW = baseHours > 0 ? Math.max(8, (remaining / baseHours) * 480) : 0;
+      const recW = baseHours > 0 ? Math.max(8, (reclaimed / baseHours) * 480) : 0;
+      document.getElementById('svg-bar-rem').setAttribute('width', remW.toFixed(1));
+      document.getElementById('svg-bar-rec').setAttribute('width', recW.toFixed(1));
+
+      document.querySelectorAll('.preset-btn').forEach((btn) => {
+        btn.classList.toggle('active', Number(btn.dataset.preset) === state.pct);
+      });
+
+      const bn = bottlenecks[state.bottleneck];
+      document.getElementById('bn-title').textContent = bn.title;
+      document.getElementById('bn-body').innerHTML = bn.body;
+
+      return { baseHours, reclaimed, remaining, usd, fte };
+    }
+
+    function renderPillars() {
+      const container = document.getElementById('pillars-container');
+      container.innerHTML = '';
+      pillars.forEach((p, pIdx) => {
+        const card = document.createElement('div');
+        card.className = 'pillar-card';
+        const pSum = p.items.reduce((acc, it) => acc + state.scores[it.idx], 0);
+        card.innerHTML = `
+          <div class="pillar-head">
+            <div class="pillar-name">${p.name}</div>
+            <div class="pillar-score" id="p-score-${pIdx}">${pSum} / 6 pts</div>
+          </div>
+        `;
+
+        p.items.forEach((it) => {
+          const row = document.createElement('div');
+          row.className = 'crit-row';
+          const cur = state.scores[it.idx];
+          row.innerHTML = `
+            <div class="crit-text">${it.text}</div>
+            <div class="seg-group">
+              <button type="button" class="seg-opt s0 ${cur === 0 ? 'active' : ''}" data-idx="${it.idx}" data-val="0">Not Yet</button>
+              <button type="button" class="seg-opt s1 ${cur === 1 ? 'active' : ''}" data-idx="${it.idx}" data-val="1">In Progress</button>
+              <button type="button" class="seg-opt s2 ${cur === 2 ? 'active' : ''}" data-idx="${it.idx}" data-val="2">Verified</button>
+            </div>
+          `;
+          card.appendChild(row);
+        });
+
+        container.appendChild(card);
+      });
+
+      container.querySelectorAll('.seg-opt').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const idx = Number(btn.dataset.idx);
+          const val = Number(btn.dataset.val);
+          state.scores[idx] = val;
+          renderPillars();
+          updateScorecard();
+        });
+      });
+    }
+
+    function updateScorecard() {
+      const total = state.scores.reduce((a, b) => a + b, 0);
+      const pct = Math.round((total / 24) * 100);
+      const CIRC = 326.73;
+
+      document.getElementById('sc-pct').textContent = `${pct}%`;
+      document.getElementById('sc-pts').textContent = `${total} / 24 pts`;
+      document.getElementById('tab-pill-score').textContent = `${pct}%`;
+
+      const arc = document.getElementById('sc-arc');
+      arc.setAttribute('stroke-dashoffset', (CIRC * (1 - pct / 100)).toFixed(2));
+
+      const tier = document.getElementById('sc-tier');
+      const summary = document.getElementById('sc-summary');
+      if (pct >= 80) {
+        arc.setAttribute('stroke', '#0F766E');
+        tier.textContent = 'Audit-Ready';
+        tier.style.background = '#CCFBF1';
+        tier.style.color = '#0F766E';
+        summary.textContent = 'Strong ERP data grounding, verifiable audit receipts, and strict human approval boundaries are in place.';
+      } else if (pct >= 45) {
+        arc.setAttribute('stroke', '#D97706');
+        tier.textContent = 'Foundation Building';
+        tier.style.background = '#FEF3C7';
+        tier.style.color = '#92400E';
+        summary.textContent = 'Core infrastructure is taking shape, but verifiable receipts or ERP posting guardrails still leave audit exposure.';
+      } else {
+        arc.setAttribute('stroke', '#B91C1C');
+        tier.textContent = 'AI Theater Risk';
+        tier.style.background = '#FEE2E2';
+        tier.style.color = '#991B1B';
+        summary.textContent = 'Deploying agents right now risks accelerating broken workflows without verifiable trails or posting controls.';
+      }
+
+      const barsEl = document.getElementById('pillar-bars');
+      barsEl.innerHTML = '';
+      pillars.forEach((p) => {
+        const sum = p.items.reduce((acc, it) => acc + state.scores[it.idx], 0);
+        const pPct = Math.round((sum / 6) * 100);
+        const row = document.createElement('div');
+        row.className = 'p-bar-row';
+        row.innerHTML = `
+          <div class="p-bar-lbl"><span>${p.name}</span><span style="font-family:var(--font-mono)">${pPct}%</span></div>
+          <div class="p-bar-track"><div class="p-bar-fill" style="width:${pPct}%; background:${pPct >= 80 ? '#0F766E' : pPct >= 45 ? '#2563EB' : '#D97706'}"></div></div>
+        `;
+        barsEl.appendChild(row);
+      });
+
+      const allItems = pillars.flatMap((p) => p.items);
+      const gaps = allItems
+        .map((it) => ({ ...it, score: state.scores[it.idx] }))
+        .filter((it) => it.score < 2)
+        .sort((a, b) => a.score - b.score)
+        .slice(0, 3);
+
+      const listEl = document.getElementById('priority-list');
+      listEl.innerHTML = '';
+      if (gaps.length === 0) {
+        listEl.innerHTML = '<li><span class="num">✓</span><span>All 12 audit-readiness controls verified. Schedule a quarterly external-audit log review.</span></li>';
+      } else {
+        gaps.forEach((g, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span class="num">0${idx + 1}</span><span>${g.action}</span>`;
+          listEl.appendChild(li);
+        });
+      }
+
+      return { total, pct, tierText: tier.textContent, gaps };
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    // Wire sliders & buttons
+    [
+      ['in-team', 'team'],
+      ['in-hrs', 'hrs'],
+      ['in-rate', 'rate'],
+      ['in-weeks', 'weeks'],
+      ['in-pct', 'pct']
+    ].forEach(([elId, key]) => {
+      document.getElementById(elId).addEventListener('input', (e) => {
+        state[key] = Number(e.target.value);
+        updateCapacity();
+      });
+    });
+
+    document.querySelectorAll('.preset-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.pct = Number(btn.dataset.preset);
+        document.getElementById('in-pct').value = state.pct;
+        updateCapacity();
+      });
+    });
+
+    document.querySelectorAll('.b-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.bottleneck = btn.dataset.bn;
+        document.querySelectorAll('.b-btn').forEach((b) => b.classList.toggle('active', b === btn));
+        updateCapacity();
+      });
+    });
+
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach((b) => b.classList.toggle('active', b === btn));
+        document.querySelectorAll('.panel-section').forEach((sec) => sec.classList.toggle('active', sec.id === target));
+      });
+    });
+
+    document.getElementById('btn-copy').addEventListener('click', async () => {
+      const cap = updateCapacity();
+      const sc = updateScorecard();
+      const gapLines = sc.gaps.length
+        ? sc.gaps.map((g, i) => `  ${i + 1}. ${g.action}`).join('\n')
+        : '  All 12 audit-readiness controls verified.';
+      const summary = [
+        'FINANCE AI BRIEFING SUMMARY (Microsoft Global Treasury & Copilot for Finance Playbook)',
+        '--------------------------------------------------------------------------------',
+        `Team Scope: ${state.team} staff | ${state.hrs} swivel-chair hrs/wk | $${state.rate}/hr | ${state.weeks} wks/yr`,
+        `Target Prep Reduction: ${state.pct}% (40% = Microsoft Global Treasury call-prep benchmark)`,
+        `Annual Reclaimable Hours: ${fmtNum(cap.reclaimed)} hrs/yr (~${cap.fte.toFixed(2)} FTE | $${fmtNum(cap.usd)} capacity value)`,
+        `Audit-Readiness Score: ${sc.pct}% (${sc.total}/24 pts) — Tier: ${sc.tierText}`,
+        'Top Next-30-Day Priorities:',
+        gapLines
+      ].join('\n');
+
+      try {
+        await navigator.clipboard.writeText(summary);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = summary;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      showToast('CFO Briefing Summary copied to clipboard');
+    });
+
+    document.getElementById('btn-print').addEventListener('click', () => window.print());
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      state.team = 12; state.hrs = 8; state.rate = 75; state.weeks = 48; state.pct = 40; state.bottleneck = '1';
+      state.scores = [2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 0];
+      document.getElementById('in-team').value = 12;
+      document.getElementById('in-hrs').value = 8;
+      document.getElementById('in-rate').value = 75;
+      document.getElementById('in-weeks').value = 48;
+      document.getElementById('in-pct').value = 40;
+      document.querySelectorAll('.b-btn').forEach((b) => b.classList.toggle('active', b.dataset.bn === '1'));
+      updateCapacity();
+      renderPillars();
+      updateScorecard();
+      showToast('Calculator & scorecard reset to defaults');
+    });
+
+    updateCapacity();
+    renderPillars();
+    updateScorecard();
+  </script>
+</body>
+</html>
